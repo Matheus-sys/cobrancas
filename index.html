@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cobranças Pix</title>
+  <meta name="description" content="Gere cobranças com Pix para seus inquilinos e envie pelo WhatsApp.">
+  <meta name="theme-color" content="#12303a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Cobranças">
+  <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button type="button" class="brand" data-go="form" aria-label="Ir para nova cobrança">
+      <span class="brand-mark" aria-hidden="true">R$</span>
+      <span class="brand-text">
+        <span class="brand-name">Cobranças</span>
+        <span class="brand-sub">Pix para inquilinos</span>
+      </span>
+    </button>
+    <nav class="topnav" id="topnav" hidden>
+      <button type="button" class="navbtn" data-go="history">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 2M3.05 11a9 9 0 1 1 .5 4M3 4v5h5"/></svg>
+        <span>Histórico</span>
+      </button>
+      <button type="button" class="navbtn" data-go="setup">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        <span>Meus dados</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ============ MEUS DADOS ============ -->
+    <section class="view" id="view-setup" hidden>
+      <div class="intro">
+        <h1>Seus dados para receber</h1>
+        <p>Preencha uma vez só. Eles aparecem em todas as cobranças.</p>
+      </div>
+
+      <form id="setup-form" class="card" novalidate>
+        <div class="field">
+          <label for="cfg-nome">Seu nome completo</label>
+          <input id="cfg-nome" name="nome" autocomplete="name" required>
+          <p class="hint">Do jeito que aparece na sua conta do banco.</p>
+          <p class="error" data-error="nome"></p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Qual é o tipo da sua chave Pix?</legend>
+          <div class="segmented" id="cfg-tipo">
+            <label><input type="radio" name="tipo" value="celular" checked><span>Celular</span></label>
+            <label><input type="radio" name="tipo" value="cpf"><span>CPF</span></label>
+            <label><input type="radio" name="tipo" value="email"><span>E-mail</span></label>
+            <label><input type="radio" name="tipo" value="cnpj"><span>CNPJ</span></label>
+            <label class="wide"><input type="radio" name="tipo" value="aleatoria"><span>Chave aleatória</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="cfg-chave" id="cfg-chave-label">Sua chave Pix</label>
+          <input id="cfg-chave" name="chave" required>
+          <p class="hint" id="cfg-chave-hint"></p>
+          <p class="error" data-error="chave"></p>
+        </div>
+
+        <div class="field">
+          <label for="cfg-cidade">Sua cidade</label>
+          <input id="cfg-cidade" name="cidade" autocomplete="address-level2" required>
+          <p class="error" data-error="cidade"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Salvar meus dados</button>
+      </form>
+    </section>
+
+    <!-- ============ NOVA COBRANÇA ============ -->
+    <section class="view" id="view-form" hidden>
+      <div class="intro">
+        <h1 id="form-title">Nova cobrança</h1>
+        <p>Preencha e toque em <strong>Gerar cobrança</strong>.</p>
+      </div>
+
+      <form id="bill-form" novalidate>
+        <div class="card">
+          <h2 class="card-title"><span class="step">1</span> Inquilino</h2>
+          <div class="field">
+            <label for="inq-nome">Nome do inquilino</label>
+            <input id="inq-nome" list="inq-lista" autocomplete="off" required>
+            <datalist id="inq-lista"></datalist>
+            <p class="error" data-error="inqNome"></p>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="inq-unidade">Apto / Casa</label>
+              <input id="inq-unidade" autocomplete="off" placeholder="Ex.: Apto 12">
+            </div>
+            <div class="field">
+              <label for="inq-whats">WhatsApp <span class="opt">(opcional)</span></label>
+              <input id="inq-whats" inputmode="tel" autocomplete="off" placeholder="(11) 98765-4321">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><span class="step">2</span> Mês e vencimento</h2>
+          <div class="row">
+            <div class="field">
+              <label for="ref-mes">Mês da cobrança</label>
+              <select id="ref-mes"></select>
+            </div>
+            <div class="field">
+              <label for="venc">Vence em</label>
+              <input id="venc" type="date" required>
+              <p class="error" data-error="venc"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><span class="step">3</span> O que vai cobrar</h2>
+          <p class="hint hint-top">Toque para adicionar:</p>
+          <div class="chips" id="chips">
+            <button type="button" class="chip" data-item="Aluguel">+ Aluguel</button>
+            <button type="button" class="chip" data-item="Luz">+ Luz</button>
+            <button type="button" class="chip" data-item="Água">+ Água</button>
+            <button type="button" class="chip" data-item="Telefone">+ Telefone</button>
+            <button type="button" class="chip" data-item="Condomínio">+ Condomínio</button>
+            <button type="button" class="chip" data-item="Gás">+ Gás</button>
+            <button type="button" class="chip" data-item="Internet">+ Internet</button>
+            <button type="button" class="chip chip-outro" data-item="">+ Outro</button>
+          </div>
+          <ul class="items" id="items"></ul>
+          <p class="empty" id="items-empty">Nenhum item ainda.</p>
+          <p class="error" data-error="itens"></p>
+
+          <div class="field field-obs">
+            <label for="obs">Recado <span class="opt">(opcional)</span></label>
+            <textarea id="obs" rows="2" maxlength="200" placeholder="Ex.: Leitura da luz: 152 kWh"></textarea>
+          </div>
+        </div>
+
+        <div class="totalbar">
+          <div class="totalbar-inner">
+            <div class="total">
+              <span>Total</span>
+              <strong id="total">R$ 0,00</strong>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Gerar cobrança</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ COBRANÇA GERADA ============ -->
+    <section class="view" id="view-result" hidden>
+      <div class="doc-frame">
+        <article class="doc" id="doc"></article>
+      </div>
+
+      <div class="card send">
+        <h2 class="card-title">Enviar ao inquilino</h2>
+        <ol class="send-steps">
+          <li>
+            <button type="button" class="btn btn-whats btn-block" id="btn-share-img">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z"/></svg>
+              <span>1. Enviar a cobrança</span>
+            </button>
+            <p class="hint">Manda a imagem com o QR Code e os valores.</p>
+          </li>
+          <li>
+            <button type="button" class="btn btn-outline btn-block" id="btn-share-code">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+              <span>2. Enviar o código Pix</span>
+            </button>
+            <p class="hint">Assim o inquilino copia e paga pelo celular.</p>
+          </li>
+        </ol>
+        <div class="send-more">
+          <button type="button" class="btn btn-ghost" id="btn-copy">Copiar código</button>
+          <button type="button" class="btn btn-ghost" id="btn-download">Salvar imagem</button>
+          <button type="button" class="btn btn-ghost" id="btn-print">Imprimir</button>
+        </div>
+      </div>
+
+      <div class="result-nav">
+        <button type="button" class="btn btn-outline" id="btn-edit">← Corrigir</button>
+        <button type="button" class="btn btn-primary" id="btn-new">Nova cobrança</button>
+      </div>
+    </section>
+
+    <!-- ============ HISTÓRICO ============ -->
+    <section class="view" id="view-history" hidden>
+      <div class="intro">
+        <h1>Últimas cobranças</h1>
+        <p>Abra para enviar de novo ou repita no mês seguinte.</p>
+      </div>
+      <ul class="history" id="history"></ul>
+      <p class="empty card" id="history-empty">Você ainda não gerou cobranças.</p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="vendor/html-to-image.js"></script>
+  <script src="js/pix.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
