@@ -64,13 +64,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--gold); color: var(--ink);
   font-family: var(--serif); font-size: 19px;
 }
-.brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
 .brand-name { font-family: var(--serif); font-size: 23px; letter-spacing: .2px; }
 .brand-sub { font-size: 13px; opacity: .75; }
 .topnav { display: flex; gap: 6px; }
 .navbtn {
   display: flex; flex-direction: column; align-items: center; gap: 2px;
-  min-width: 64px; min-height: 52px; padding: 6px 8px;
+  min-width: 0; min-height: 52px; padding: 6px 10px; white-space: nowrap;
   background: rgba(255, 255, 255, .08); border: 0; border-radius: 12px;
   color: #fff; font-size: 12.5px; cursor: pointer;
 }
@@ -142,11 +142,11 @@ input::placeholder, textarea::placeholder { color: #9aa3a6; }
 .hint-top { margin: -6px 0 10px; }
 .error { margin: 6px 0 0; font-size: 16px; font-weight: 600; color: var(--danger); }
 .error:empty { display: none; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row { display: grid; grid-template-columns: 1fr; gap: 16px; }
 .row .field { margin-bottom: 0; }
 .row + .field, .field + .row { margin-top: 16px; }
-@media (max-width: 420px) {
-  .row { grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 600px) {
+  .row { grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; }
 }
 
 /* escolha do tipo de chave */
@@ -183,10 +183,10 @@ input::placeholder, textarea::placeholder { color: #9aa3a6; }
 .btn-ghost { background: var(--gold-soft); color: var(--ink); font-weight: 600; font-size: 16px; min-height: 50px; padding: 10px 14px; }
 
 /* ---------- itens ---------- */
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
 .chip {
-  min-height: 48px; padding: 8px 16px;
-  border: 2px solid var(--line); border-radius: 999px;
+  min-height: 52px; padding: 8px 10px;
+  border: 2px solid var(--line); border-radius: 12px;
   background: #fff; color: var(--ink); font-weight: 600; font-size: 17px;
   cursor: pointer;
 }
@@ -231,6 +231,7 @@ input::placeholder, textarea::placeholder { color: #9aa3a6; }
   border-top: 1px solid var(--line);
 }
 .totalbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 620px; margin: 0 auto; }
+.totalbar .btn-lg { flex: 0 1 auto; }
 .total { display: flex; flex-direction: column; line-height: 1.1; }
 .total span { font-size: 15px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .total strong { font-size: 27px; color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -323,13 +324,21 @@ input::placeholder, textarea::placeholder { color: #9aa3a6; }
 .send-more .btn { flex: 1 1 140px; }
 .result-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+@media (max-width: 390px) {
+  .brand-sub { display: none; }
+  .brand-name { font-size: 21px; }
+  .navbtn { padding: 6px 8px; font-size: 12px; }
+  .total strong { font-size: 22px; }
+  .totalbar .btn-lg { font-size: 17px; padding: 12px 16px; }
+}
+
 /* ---------- histórico ---------- */
 .history { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .hist {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow); padding: 16px;
 }
-.hist-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.hist-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .hist-name { font-weight: 700; font-size: 19px; color: var(--ink); overflow-wrap: anywhere; }
 .hist-total { font-weight: 700; font-size: 19px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .hist-meta { margin: 2px 0 12px; color: var(--muted); font-size: 16px; }
