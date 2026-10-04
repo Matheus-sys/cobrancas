@@ -1,5 +1,5 @@
 // Mantém o app funcionando sem internet. Ao mudar arquivos, aumente a versão.
-const CACHE = 'cobrancas-v2';
+const CACHE = 'cobrancas-v3';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/pix.js',
   'vendor/qrcode.min.js', 'vendor/html-to-image.js',
